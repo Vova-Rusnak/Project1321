@@ -1,0 +1,86 @@
+using System;
+using System.Collections.Generic;
+
+class Person : IComparable<Person>
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+
+    public Person(string name, int age)
+    {
+        Name = name;
+        Age = age;
+    }
+
+    // Реалізація методу CompareTo для порівняння за віком
+    public int CompareTo(Person other)
+    {
+        return Age.CompareTo(other.Age);
+    }
+}
+
+class NameLengthComparer : IComparer<Person>
+{
+    public int Compare(Person x, Person y)
+    {
+        // Порівнюємо за довжиною імені, якщо вони різні
+        int result = x.Name.Length.CompareTo(y.Name.Length);
+
+        // Якщо імена мають однакову довжину, порівнюємо їх без урахування регістру
+        if (result == 0)
+        {
+            result = string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase);
+        }
+
+        return result;
+    }
+}
+
+class AgeComparer : IComparer<Person>
+{
+    public int Compare(Person x, Person y)
+    {
+        // Порівнюємо за віком
+        return x.Age.CompareTo(y.Age);
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Enter the number of people (N):");
+        int N = int.Parse(Console.ReadLine());
+
+        SortedSet<Person> nameSortedSet = new SortedSet<Person>(new NameLengthComparer());
+        SortedSet<Person> ageSortedSet = new SortedSet<Person>(new AgeComparer());
+
+        Console.WriteLine("Enter information for each person in the format '<name> <age>':");
+        for (int i = 0; i < N; i++)
+        {
+            string[] input = Console.ReadLine().Split();
+            string name = input[0];
+            int age = int.Parse(input[1]);
+
+            Person person = new Person(name, age);
+
+            // Додавання людини до обох наборів
+            nameSortedSet.Add(person);
+            ageSortedSet.Add(person);
+        }
+
+        // Друк результатів для набору з компаратором імен
+        Console.WriteLine("\nName Comparator:");
+        foreach (var person in nameSortedSet)
+        {
+            Console.WriteLine($"{person.Name} {person.Age}");
+        }
+
+        // Друк результатів для набору з віковим компаратором
+        Console.WriteLine("\nAge Comparator:");
+        foreach (var person in ageSortedSet)
+        {
+            Console.WriteLine($"{person.Name} {person.Age}");
+        }
+    }
+}
