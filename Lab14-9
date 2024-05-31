@@ -1,0 +1,35 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Student
+{
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string FacultyNumber { get; set; }
+    public List<int> Marks { get; set; }
+}
+
+class Program
+{
+    static void Main()
+    {
+        var students = new List<Student>
+        {
+            new Student { FirstName = "Student1", LastName = "LastName1", FacultyNumber = "554214", Marks = new List<int> { 6, 6, 6, 5 } },
+            new Student { FirstName = "Student2", LastName = "LastName2", FacultyNumber = "653215", Marks = new List<int> { 3, 4, 5, 6 } },
+            new Student { FirstName = "Student3", LastName = "LastName3", FacultyNumber = "156212", Marks = new List<int> { 4, 2, 3, 4 } },
+            new Student { FirstName = "Student4", LastName = "LastName4", FacultyNumber = "324413", Marks = new List<int> { 5, 6, 5, 5 } },
+            new Student { FirstName = "Student5", LastName = "LastName5", FacultyNumber = "134014", Marks = new List<int> { 5, 3, 4, 2 } }
+        };
+
+        var enrolledStudents = students
+            .Where(s => s.FacultyNumber.Substring(4, 2) == "14" || s.FacultyNumber.Substring(4, 2) == "15")
+            .Select(s => s.Marks);
+
+        foreach (var marks in enrolledStudents)
+        {
+            Console.WriteLine(string.Join(" ", marks));
+        }
+    }
+}
