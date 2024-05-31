@@ -1,0 +1,26 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program
+{
+    static void Main()
+    {
+        var students = new List<Student>
+        {
+            new Student { FirstName = "Sara", LastName = "Mills" },
+            new Student { FirstName = "Andrew", LastName = "Gibson" },
+            new Student { FirstName = "Craig", LastName = "Ellis" },
+            new Student { FirstName = "Steven", LastName = "Cole" },
+            new Student { FirstName = "Andrew", LastName = "Carter" }
+        };
+
+        var selectedStudents = students
+            .Where(s => string.Compare(s.FirstName, s.LastName) < 0);
+
+        foreach (var student in selectedStudents)
+        {
+            Console.WriteLine($"{student.FirstName} {student.LastName}");
+        }
+    }
+}
