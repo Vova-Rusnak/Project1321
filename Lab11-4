@@ -1,0 +1,105 @@
+using System;
+using System.Collections.Generic;
+
+public interface IEmployee
+{
+    string Name { get; }
+    int WorkHoursPerWeek { get; }
+}
+
+public class StandardEmployee : IEmployee
+{
+    public string Name { get; }
+    public int WorkHoursPerWeek => 40;
+
+    public StandardEmployee(string name)
+    {
+        Name = name;
+    }
+}
+
+public class PartTimeEmployee : IEmployee
+{
+    public string Name { get; }
+    public int WorkHoursPerWeek => 20;
+
+    public PartTimeEmployee(string name)
+    {
+        Name = name;
+    }
+}
+
+public class Job
+{
+    public string Name { get; }
+    private int hoursOfWorkRequired;
+    private IEmployee employee;
+
+    public Job(string name, int hoursOfWorkRequired, IEmployee employee)
+    {
+        Name = name;
+        this.hoursOfWorkRequired = hoursOfWorkRequired;
+        this.employee = employee;
+    }
+
+    public void Update()
+    {
+        hoursOfWorkRequired -= employee.WorkHoursPerWeek;
+        if (hoursOfWorkRequired <= 0)
+        {
+            Console.WriteLine($"Job {Name} done!");
+            JobDone?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    public override string ToString()
+    {
+        return $"Job: {Name} Hours Remaining: {hoursOfWorkRequired}";
+    }
+
+    public event EventHandler JobDone;
+}
+
+class Program
+{
+    static void Main()
+    {
+        Dictionary<string, IEmployee> employees = new Dictionary<string, IEmployee>();
+        List<Job> jobs = new List<Job>();
+
+        string input;
+        while ((input = Console.ReadLine()) != "End")
+        {
+            string[] tokens = input.Split();
+            switch (tokens[0])
+            {
+                case "StandardEmployee":
+                    employees[tokens[1]] = new StandardEmployee(tokens[1]);
+                    break;
+                case "PartTimeEmployee":
+                    employees[tokens[1]] = new PartTimeEmployee(tokens[1]);
+                    break;
+                case "Job":
+                    string jobName = tokens[1];
+                    int hoursOfWorkRequired = int.Parse(tokens[2]);
+                    string employeeName = tokens[3];
+                    Job job = new Job(jobName, hoursOfWorkRequired, employees[employeeName]);
+                    jobs.Add(job);
+                    job.JobDone += (sender, args) => jobs.Remove((Job)sender);
+                    break;
+                case "Pass":
+                    foreach (var job in new List<Job>(jobs))
+                    {
+                        job.Update();
+                    }
+                    break;
+                case "Status":
+                    foreach (var job in jobs)
+                    {
+                        Console.WriteLine(job);
+                    }
+                    break;
+            }
+        }
+    }
+}
