@@ -1,0 +1,33 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Student
+{
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Phone { get; set; }
+}
+
+class Program
+{
+    static void Main()
+    {
+        var students = new List<Student>
+        {
+            new Student { FirstName = "Sara", LastName = "Mills", Phone = "02435521" },
+            new Student { FirstName = "Andrew", LastName = "Gibson", Phone = "0895223344" },
+            new Student { FirstName = "Craig", LastName = "Ellis", Phone = "+3592667710" },
+            new Student { FirstName = "Steven", LastName = "Cole", Phone = "3242133312" },
+            new Student { FirstName = "Andrew", LastName = "Carter", Phone = "+001234532" }
+        };
+
+        var sofiaPhoneStudents = students
+            .Where(s => s.Phone.StartsWith("02") || s.Phone.StartsWith("+3592"));
+
+        foreach (var student in sofiaPhoneStudents)
+        {
+            Console.WriteLine($"{student.FirstName} {student.LastName}");
+        }
+    }
+}
