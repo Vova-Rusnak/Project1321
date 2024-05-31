@@ -1,0 +1,33 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Student
+{
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
+}
+
+class Program
+{
+    static void Main()
+    {
+        var students = new List<Student>
+        {
+            new Student { FirstName = "Sara", LastName = "Mills", Email = "smills@gmail.com" },
+            new Student { FirstName = "Andrew", LastName = "Gibson", Email = "agibson@abv.bg" },
+            new Student { FirstName = "Craig", LastName = "Ellis", Email = "cellis@cs.edu.gov" },
+            new Student { FirstName = "Steven", LastName = "Cole", Email = "themachine@abv.bg" },
+            new Student { FirstName = "Andrew", LastName = "Carter", Email = "ac147@gmail.com" }
+        };
+
+        var gmailStudents = students
+            .Where(s => s.Email.EndsWith("@gmail.com"));
+
+        foreach (var student in gmailStudents)
+        {
+            Console.WriteLine($"{student.FirstName} {student.LastName}");
+        }
+    }
+}
