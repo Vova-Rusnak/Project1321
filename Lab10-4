@@ -1,0 +1,143 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
+public class BarracksWars
+{
+    public static void Main()
+    {
+        Dictionary<string, int> unitsCount = new Dictionary<string, int>();
+        Dictionary<string, List<Unit>> allUnits = new Dictionary<string, List<Unit>>();
+
+        string input;
+        while ((input = Console.ReadLine()) != "fight")
+        {
+            string[] inputArgs = input.Split();
+            string command = inputArgs[0];
+
+            if (command == "add")
+            {
+                string unitType = inputArgs[1];
+                AddUnit(unitsCount, allUnits, unitType);
+            }
+            else if (command == "report")
+            {
+                PrintReport(unitsCount);
+            }
+            else if (command == "retire")
+            {
+                string unitType = inputArgs[1];
+                RetireUnit(unitsCount, allUnits, unitType);
+            }
+        }
+    }
+
+    private static void AddUnit(Dictionary<string, int> unitsCount, Dictionary<string, List<Unit>> allUnits, string unitType)
+    {
+        Type unitClass = Assembly.GetExecutingAssembly()
+            .GetTypes()
+            .FirstOrDefault(t => t.Name == unitType);
+
+        if (unitClass != null)
+        {
+            if (!unitsCount.ContainsKey(unitType))
+            {
+                unitsCount[unitType] = 0;
+                allUnits[unitType] = new List<Unit>();
+            }
+
+            unitsCount[unitType]++;
+            allUnits[unitType].Add(CreateUnit(unitType));
+            Console.WriteLine($"{unitType} added!");
+        }
+    }
+
+    private static Unit CreateUnit(string unitType)
+    {
+        Type unitClass = Assembly.GetExecutingAssembly()
+            .GetTypes()
+            .FirstOrDefault(t => t.Name == unitType);
+
+        if (unitClass != null)
+        {
+            return (Unit)Activator.CreateInstance(unitClass);
+        }
+
+        return null;
+    }
+
+    private static void PrintReport(Dictionary<string, int> unitsCount)
+    {
+        foreach (var pair in unitsCount.OrderBy(pair => pair.Key))
+        {
+            Console.WriteLine($"{pair.Key} -> {pair.Value}");
+        }
+    }
+
+    private static void RetireUnit(Dictionary<string, int> unitsCount, Dictionary<string, List<Unit>> allUnits, string unitType)
+    {
+        if (unitsCount.ContainsKey(unitType) && unitsCount[unitType] > 0)
+        {
+            unitsCount[unitType]--;
+            allUnits[unitType].RemoveAt(allUnits[unitType].Count - 1);
+            Console.WriteLine($"{unitType} retired!");
+        }
+        else
+        {
+            Console.WriteLine("No such units in repository.");
+        }
+    }
+
+    public abstract class Unit
+    {
+        public int Health { get; set; }
+        public int Attack { get; set; }
+
+        public Unit(int health, int attack)
+        {
+            Health = health;
+            Attack = attack;
+        }
+    }
+
+    public class Archer : Unit
+    {
+        public Archer()
+            : base(25, 7)
+        {
+        }
+    }
+
+    public class Swordsman : Unit
+    {
+        public Swordsman()
+            : base(40, 13)
+        {
+        }
+    }
+
+    public class Pikeman : Unit
+    {
+        public Pikeman()
+            : base(35, 10)
+        {
+        }
+    }
+
+    public class Horseman : Unit
+    {
+        public Horseman()
+            : base(50, 10)
+        {
+        }
+    }
+
+    public class Gunner : Unit
+    {
+        public Gunner()
+            : base(20, 20)
+        {
+        }
+    }
+}
