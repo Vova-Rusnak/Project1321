@@ -1,0 +1,102 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class KingGambit
+{
+    static void Main()
+    {
+        string kingName = Console.ReadLine();
+        King king = new King(kingName);
+
+        string[] royalGuardNames = Console.ReadLine().Split();
+        List<RoyalGuard> royalGuards = royalGuardNames.Select(name => new RoyalGuard(name)).ToList();
+
+        string[] footmanNames = Console.ReadLine().Split();
+        List<Footman> footmen = footmanNames.Select(name => new Footman(name)).ToList();
+
+        string input;
+        while ((input = Console.ReadLine()) != "End")
+        {
+            if (input == "Attack King")
+            {
+                king.RespondToAttack();
+                foreach (var royalGuard in royalGuards)
+                {
+                    royalGuard.RespondToAttack();
+                }
+                foreach (var footman in footmen)
+                {
+                    footman.RespondToAttack();
+                }
+            }
+            else if (input.StartsWith("Kill"))
+            {
+                string[] tokens = input.Split();
+                string name = tokens[1];
+                KillUnit(royalGuards, footmen, name);
+            }
+        }
+    }
+
+    static void KillUnit(List<RoyalGuard> royalGuards, List<Footman> footmen, string name)
+    {
+        RoyalGuard royalGuard = royalGuards.FirstOrDefault(r => r.Name == name);
+        if (royalGuard != null)
+        {
+            royalGuards.Remove(royalGuard);
+            return;
+        }
+
+        Footman footman = footmen.FirstOrDefault(f => f.Name == name);
+        if (footman != null)
+        {
+            footmen.Remove(footman);
+        }
+    }
+}
+
+class King
+{
+    public string Name { get; private set; }
+
+    public King(string name)
+    {
+        Name = name;
+    }
+
+    public void RespondToAttack()
+    {
+        Console.WriteLine($"King {Name} is under attack!");
+    }
+}
+
+class RoyalGuard
+{
+    public string Name { get; private set; }
+
+    public RoyalGuard(string name)
+    {
+        Name = name;
+    }
+
+    public void RespondToAttack()
+    {
+        Console.WriteLine($"Royal Guard {Name} is defending!");
+    }
+}
+
+class Footman
+{
+    public string Name { get; private set; }
+
+    public Footman(string name)
+    {
+        Name = name;
+    }
+
+    public void RespondToAttack()
+    {
+        Console.WriteLine($"Footman {Name} is panicking!");
+    }
+}
