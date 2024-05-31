@@ -1,0 +1,40 @@
+using System;
+
+namespace ExceptionExample
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            try
+            {
+                Console.WriteLine("Введіть число:");
+                int number = Convert.ToInt32(Console.ReadLine());
+                
+                if (number < 0)
+                {
+                    throw new ArgumentException("Число не може бути від'ємним");
+                }
+                
+                Console.WriteLine($"Ваше число: {number}");
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine("Помилка формату вводу. Будь ласка, введіть ціле число.");
+                Console.WriteLine($"Деталі помилки: {ex.Message}");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"Помилка аргументу: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Сталася непередбачувана помилка: {ex.Message}");
+            }
+            finally
+            {
+                Console.WriteLine("Програма завершила роботу.");
+            }
+        }
+    }
+}
