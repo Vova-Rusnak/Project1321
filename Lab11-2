@@ -1,0 +1,94 @@
+using System;
+using System.Collections.Generic;
+
+public class King
+{
+    public string Name { get; }
+
+    public King(string name)
+    {
+        Name = name;
+    }
+
+    public void RespondToAttack()
+    {
+        Console.WriteLine($"King {Name} is under attack!");
+    }
+}
+
+public class Footman
+{
+    public string Name { get; }
+
+    public Footman(string name)
+    {
+        Name = name;
+    }
+
+    public void RespondToAttack()
+    {
+        Console.WriteLine($"Footman {Name} is panicking!");
+    }
+}
+
+public class RoyalGuard
+{
+    public string Name { get; }
+
+    public RoyalGuard(string name)
+    {
+        Name = name;
+    }
+
+    public void RespondToAttack()
+    {
+        Console.WriteLine($"Royal Guard {Name} is defending!");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        string kingName = Console.ReadLine();
+        King king = new King(kingName);
+
+        List<RoyalGuard> royalGuards = new List<RoyalGuard>();
+        List<Footman> footmen = new List<Footman>();
+
+        string[] royalGuardNames = Console.ReadLine().Split();
+        foreach (var name in royalGuardNames)
+        {
+            royalGuards.Add(new RoyalGuard(name));
+        }
+
+        string[] footmanNames = Console.ReadLine().Split();
+        foreach (var name in footmanNames)
+        {
+            footmen.Add(new Footman(name));
+        }
+
+        string command;
+        while ((command = Console.ReadLine()) != "End")
+        {
+            if (command == "Attack King")
+            {
+                king.RespondToAttack();
+                foreach (var guard in royalGuards)
+                {
+                    guard.RespondToAttack();
+                }
+                foreach (var footman in footmen)
+                {
+                    footman.RespondToAttack();
+                }
+            }
+            else if (command.StartsWith("Kill "))
+            {
+                string name = command.Split()[1];
+                royalGuards.RemoveAll(g => g.Name == name);
+                footmen.RemoveAll(f => f.Name == name);
+            }
+        }
+    }
+}
