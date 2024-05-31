@@ -1,0 +1,65 @@
+using System;
+using System.Collections.Generic;
+
+class PrimitiveCalculator
+{
+    private Func<int, int, int> currentStrategy;
+
+    public PrimitiveCalculator()
+    {
+        this.currentStrategy = (a, b) => a + b; // Default strategy is addition
+    }
+
+    public void ChangeStrategy(char @operator)
+    {
+        switch (@operator)
+        {
+            case '+':
+                this.currentStrategy = (a, b) => a + b;
+                break;
+            case '-':
+                this.currentStrategy = (a, b) => a - b;
+                break;
+            case '*':
+                this.currentStrategy = (a, b) => a * b;
+                break;
+            case '/':
+                this.currentStrategy = (a, b) => a / b;
+                break;
+            default:
+                throw new InvalidOperationException("Invalid operator");
+        }
+    }
+
+    public int PerformCalculation(int firstOperand, int secondOperand)
+    {
+        int result = this.currentStrategy(firstOperand, secondOperand);
+        return result;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        PrimitiveCalculator calculator = new PrimitiveCalculator();
+
+        string input;
+        while ((input = Console.ReadLine()) != "End")
+        {
+            if (input.StartsWith("mode"))
+            {
+                char @operator = input.Split(' ')[1][0];
+                calculator.ChangeStrategy(@operator);
+            }
+            else
+            {
+                string[] operands = input.Split(' ');
+                int firstOperand = int.Parse(operands[0]);
+                int secondOperand = int.Parse(operands[1]);
+                int result = calculator.PerformCalculation(firstOperand, secondOperand);
+                Console.WriteLine(result);
+            }
+        }
+    }
+}
