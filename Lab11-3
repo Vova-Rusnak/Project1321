@@ -1,0 +1,81 @@
+using System;
+
+public interface IStrategy
+{
+    int Calculate(int firstOperand, int secondOperand);
+}
+
+public class AdditionStrategy : IStrategy
+{
+    public int Calculate(int firstOperand, int secondOperand) => firstOperand + secondOperand;
+}
+
+public class SubtractionStrategy : IStrategy
+{
+    public int Calculate(int firstOperand, int secondOperand) => firstOperand - secondOperand;
+}
+
+public class MultiplicationStrategy : IStrategy
+{
+    public int Calculate(int firstOperand, int secondOperand) => firstOperand * secondOperand;
+}
+
+public class DivisionStrategy : IStrategy
+{
+    public int Calculate(int firstOperand, int secondOperand) => firstOperand / secondOperand;
+}
+
+public class PrimitiveCalculator
+{
+    private IStrategy strategy;
+
+    public PrimitiveCalculator()
+    {
+        strategy = new AdditionStrategy();
+    }
+
+    public void ChangeStrategy(char @operator)
+    {
+        switch (@operator)
+        {
+            case '+':
+                strategy = new AdditionStrategy();
+                break;
+            case '-':
+                strategy = new SubtractionStrategy();
+                break;
+            case '*':
+                strategy = new MultiplicationStrategy();
+                break;
+            case '/':
+                strategy = new DivisionStrategy();
+                break;
+        }
+    }
+
+    public int PerformCalculation(int firstOperand, int secondOperand) => strategy.Calculate(firstOperand, secondOperand);
+}
+
+class Program
+{
+    static void Main()
+    {
+        PrimitiveCalculator calculator = new PrimitiveCalculator();
+
+        string input;
+        while ((input = Console.ReadLine()) != "End")
+        {
+            string[] tokens = input.Split();
+            if (tokens[0] == "mode")
+            {
+                calculator.ChangeStrategy(tokens[1][0]);
+            }
+            else
+            {
+                int firstOperand = int.Parse(tokens[0]);
+                int secondOperand = int.Parse(tokens[1]);
+                Console.WriteLine(calculator.PerformCalculation(firstOperand, secondOperand));
+            }
+        }
+    }
+}
