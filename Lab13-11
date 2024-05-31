@@ -1,0 +1,23 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        string A = Console.ReadLine();
+        string B = Console.ReadLine();
+
+        bool commonSubstringExists = false;
+
+        for (int i = 0; i < A.Length; i++)
+        {
+            if (B.Contains(A[i]))
+            {
+                commonSubstringExists = true;
+                break;
+            }
+        }
+
+        Console.WriteLine(commonSubstringExists ? "yes" : "no");
+    }
+}
