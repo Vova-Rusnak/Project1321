@@ -1,0 +1,114 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
+public class ListyIterator<T> : IEnumerable<T>
+{
+    private List<T> elements;
+    private int currentIndex;
+
+    public ListyIterator(IEnumerable<T> collection)
+    {
+        this.elements = new List<T>(collection);
+        this.currentIndex = 0;
+    }
+
+    public bool Move()
+    {
+        if (HasNext())
+        {
+            currentIndex++;
+            return true;
+        }
+        Console.WriteLine("No more elements to move to!");
+        return false;
+    }
+
+    public bool HasNext()
+    {
+        return currentIndex < elements.Count - 1;
+    }
+
+    public void Print()
+    {
+        if (elements.Any())
+        {
+            Console.WriteLine(elements[currentIndex]);
+        }
+        else
+        {
+            Console.WriteLine("Invalid Operation! The collection is empty.");
+        }
+    }
+
+    public void PrintAll()
+    {
+        if (elements.Any())
+        {
+            Console.WriteLine(string.Join(" ", elements));
+        }
+        else
+        {
+            Console.WriteLine("Invalid Operation! The collection is empty.");
+        }
+    }
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        for (int i = 0; i < elements.Count; i++)
+        {
+            yield return elements[i];
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Enter commands. First command should be 'Create' followed by elements separated by spaces.");
+        string[] input = Console.ReadLine().Split();
+        ListyIterator<string> listyIterator = new ListyIterator<string>(input.Skip(1));
+
+        string command;
+        while ((command = Console.ReadLine()) != "END")
+        {
+            try
+            {
+                ExecuteCommand(command, listyIterator);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+    }
+
+    static void ExecuteCommand(string command, ListyIterator<string> listyIterator)
+    {
+        switch (command)
+        {
+            case "Move":
+                Console.WriteLine(listyIterator.Move() ? "Moved to the next element." : "Failed to move.");
+                break;
+            case "Print":
+                listyIterator.Print();
+                break;
+            case "PrintAll":
+                listyIterator.PrintAll();
+                break;
+            case "HasNext":
+                Console.WriteLine(listyIterator.HasNext() ? "There is a next element." : "No more elements.");
+                break;
+            default:
+                Console.WriteLine("Unknown command. Valid commands are: Move, Print, PrintAll, HasNext, END");
+                break;
+        }
+    }
+}
