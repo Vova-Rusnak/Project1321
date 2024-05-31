@@ -1,0 +1,41 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Order
+{
+    public string Company { get; set; }
+    public int Amount { get; set; }
+    public string Product { get; set; }
+}
+
+class Program
+{
+    static void Main()
+    {
+        var orders = new List<Order>
+        {
+            new Order { Company = "SoftUni", Amount = 600, Product = "paper" },
+            new Order { Company = "Vivacom", Amount = 600, Product = "pen" },
+            new Order { Company = "XS", Amount = 20, Product = "chair" },
+            new Order { Company = "Vivacom", Amount = 200, Product = "chair" },
+            new Order { Company = "SoftUni", Amount = 40, Product = "chair" },
+            new Order { Company = "XS", Amount = 40, Product = "chair" },
+            new Order { Company = "SoftUni", Amount = 1, Product = "printer" }
+        };
+
+        var groupedOrders = orders
+            .GroupBy(o => o.Company)
+            .OrderBy(g => g.Key);
+
+        foreach (var group in groupedOrders)
+        {
+            var products = group
+                .GroupBy(p => p.Product)
+                .Select(p => $"{p.Key}-{p.Sum(o => o.Amount)}")
+                .ToList();
+
+            Console.WriteLine($"{group.Key}: {string.Join(", ", products)}");
+        }
+    }
+}
