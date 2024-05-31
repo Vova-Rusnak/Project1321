@@ -1,0 +1,36 @@
+using System;
+
+namespace ExceptionHandlingExample
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            try
+            {
+                DivideNumbers();
+            }
+            catch (DivideByZeroException ex)
+            {
+                Console.WriteLine("Помилка: Ділення на нуль неможливе.");
+                Console.WriteLine($"Деталі помилки: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Сталася непередбачувана помилка: {ex.Message}");
+            }
+        }
+
+        static void DivideNumbers()
+        {
+            Console.WriteLine("Введіть перше число:");
+            int num1 = Convert.ToInt32(Console.ReadLine());
+            
+            Console.WriteLine("Введіть друге число:");
+            int num2 = Convert.ToInt32(Console.ReadLine());
+            
+            int result = num1 / num2;
+            Console.WriteLine($"Результат: {result}");
+        }
+    }
+}
