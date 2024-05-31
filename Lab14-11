@@ -1,0 +1,60 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class StudentSpecialty
+{
+    public string SpecialtyName { get; set; }
+    public string FacultyNumber { get; set; }
+}
+
+class Student
+{
+    public string FacultyNumber { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+}
+
+class Program
+{
+    static void Main()
+    {
+        var specialties = new List<StudentSpecialty>
+        {
+            new StudentSpecialty { SpecialtyName = "Web Developer", FacultyNumber = "203314" },
+            new StudentSpecialty { SpecialtyName = "Web Developer", FacultyNumber = "203114" },
+            new StudentSpecialty { SpecialtyName = "PHP Developer", FacultyNumber = "203814" },
+            new StudentSpecialty { SpecialtyName = "PHP Developer", FacultyNumber = "203914" },
+            new StudentSpecialty { SpecialtyName = "QA Engineer", FacultyNumber = "203314" },
+            new StudentSpecialty { SpecialtyName = "Web Developer", FacultyNumber = "203914" }
+        };
+
+        var students = new List<Student>
+        {
+            new Student { FacultyNumber = "215314", FirstName = "Milena", LastName = "Kirova" },
+            new Student { FacultyNumber = "203114", FirstName = "Stefan", LastName = "Popov" },
+            new Student { FacultyNumber = "203314", FirstName = "Asya", LastName = "Manova" },
+            new Student { FacultyNumber = "203914", FirstName = "Diana", LastName = "Petrova" },
+            new Student { FacultyNumber = "203814", FirstName = "Ivan", LastName = "Ivanov" }
+        };
+
+        var joinedData = students
+            .Join(specialties, 
+                  s => s.FacultyNumber, 
+                  sp => sp.FacultyNumber, 
+                  (s, sp) => new 
+                  { 
+                      s.FirstName, 
+                      s.LastName, 
+                      s.FacultyNumber, 
+                      sp.SpecialtyName 
+                  })
+            .OrderBy(s => s.FirstName)
+            .ThenBy(s => s.LastName);
+
+        foreach (var item in joinedData)
+        {
+            Console.WriteLine($"{item.FirstName} {item.LastName} {item.FacultyNumber} {item.SpecialtyName}");
+        }
+    }
+}
