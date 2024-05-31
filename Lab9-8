@@ -1,0 +1,162 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        int N = int.Parse(Console.ReadLine());
+        ZooClinic zooClinic = null;
+
+        for (int i = 0; i < N; i++)
+        {
+            string[] input = Console.ReadLine().Split();
+            string command = input[0];
+
+            try
+            {
+                switch (command)
+                {
+                    case "CreateClinic":
+                        string clinicName = input[1];
+                        int rooms = int.Parse(input[2]);
+                        zooClinic = new ZooClinic(clinicName, rooms);
+                        break;
+
+                    case "CreatePet":
+                        string petName = input[1];
+                        int petAge = int.Parse(input[2]);
+                        string petType = input[3];
+                        zooClinic.CreatePet(petName, petAge, petType);
+                        break;
+
+                    case "Add":
+                        string petNameToAdd = input[1];
+                        Console.WriteLine(zooClinic.AddPetToClinic(petNameToAdd));
+                        break;
+
+                    case "Release":
+                        Console.WriteLine(zooClinic.ReleasePet());
+                        break;
+
+                    case "HasEmptyRooms":
+                        Console.WriteLine(zooClinic.HasEmptyRooms());
+                        break;
+
+                    case "Print":
+                        int roomNumber = int.Parse(input[1]);
+                        zooClinic.PrintRoomInfo(roomNumber);
+                        break;
+
+                    case "PrintClinic":
+                        zooClinic.PrintAllRoomsInfo();
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Invalid operation!");
+            }
+        }
+    }
+}
+
+class Pet
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+    public string Type { get; set; }
+}
+
+class ZooClinic
+{
+    private List<Pet> pets;
+    private List<Pet>[] rooms;
+    private int currentRoomIndex;
+
+    public ZooClinic(string name, int roomsCount)
+    {
+        if (roomsCount % 2 == 0)
+        {
+            throw new Exception("Invalid operation!");
+        }
+
+        this.pets = new List<Pet>();
+        this.rooms = new List<Pet>[roomsCount];
+        this.currentRoomIndex = roomsCount / 2;
+    }
+
+    public void CreatePet(string name, int age, string type)
+    {
+        Pet pet = new Pet { Name = name, Age = age, Type = type };
+        pets.Add(pet);
+    }
+
+    public bool AddPetToClinic(string petName)
+    {
+        Pet pet = pets.Find(p => p.Name == petName);
+
+        if (pet != null)
+        {
+            for (int i = 0; i < rooms.Length; i++)
+            {
+                int roomIndex = (currentRoomIndex + i) % rooms.Length;
+                if (rooms[roomIndex] == null)
+                {
+                    rooms[roomIndex] = new List<Pet> { pet };
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public bool ReleasePet()
+    {
+        for (int i = 0; i < rooms.Length; i++)
+        {
+            int roomIndex = (currentRoomIndex + i) % rooms.Length;
+
+            if (rooms[roomIndex] != null && rooms[roomIndex].Count > 0)
+            {
+                rooms[roomIndex].RemoveAt(0);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool HasEmptyRooms()
+    {
+        return Array.Exists(rooms, room => room == null || room.Count == 0);
+    }
+
+    public void PrintRoomInfo(int roomNumber)
+    {
+        int roomIndex = roomNumber - 1;
+
+        if (rooms[roomIndex] != null && rooms[roomIndex].Count > 0)
+        {
+            Pet pet = rooms[roomIndex][0];
+            Console.WriteLine($"{pet.Name} {pet.Age} {pet.Type}");
+        }
+        else
+        {
+            Console.WriteLine("Room empty");
+        }
+    }
+
+    public void PrintAllRoomsInfo()
+    {
+        for (int i = 0; i < rooms.Length; i++)
+        {
+            Console.Write($"Room {i + 1}: ");
+            PrintRoomInfo(i + 1);
+        }
+    }
+}
