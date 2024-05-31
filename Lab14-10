@@ -1,0 +1,32 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Person
+{
+    public string Name { get; set; }
+    public int Group { get; set; }
+}
+
+class Program
+{
+    static void Main()
+    {
+        var persons = new List<Person>
+        {
+            new Person { Name = "Ivaylo Petrov", Group = 10 },
+            new Person { Name = "Stanimir Svilianov", Group = 3 },
+            new Person { Name = "Indje Kromidov", Group = 3 },
+            new Person { Name = "Irina Balabanova", Group = 4 }
+        };
+
+        var groupedPersons = persons
+            .GroupBy(p => p.Group)
+            .OrderBy(g => g.Key);
+
+        foreach (var group in groupedPersons)
+        {
+            Console.WriteLine($"{group.Key} - {string.Join(", ", group.Select(p => p.Name))}");
+        }
+    }
+}
