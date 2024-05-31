@@ -1,0 +1,51 @@
+using System;
+
+namespace DebuggingExample
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            try
+            {
+                ProcessInput();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Сталася помилка: {ex.Message}");
+            }
+        }
+
+        static void ProcessInput()
+        {
+            try
+            {
+                Console.WriteLine("Введіть число для обчислення квадратного кореня:");
+                double number = Convert.ToDouble(Console.ReadLine());
+
+                if (number < 0)
+                {
+                    throw new InvalidOperationException("Число не може бути від'ємним для обчислення квадратного кореня.");
+                }
+
+                double result = Math.Sqrt(number);
+                Console.WriteLine($"Квадратний корінь з {number} дорівнює {result}");
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine("Помилка формату. Введіть дійсне число.");
+                throw;
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($"Помилка операції: {ex.Message}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Загальна помилка: {ex.Message}");
+                throw;
+            }
+        }
+    }
+}
