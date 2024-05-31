@@ -1,0 +1,80 @@
+using System;
+using System.Reflection;
+using System.Linq;
+
+public class RichSoilLand
+{
+    private int testInt;
+    public double testDouble;
+    protected string testString;
+    private char testChar;
+    protected double[] testDoubleArray;
+    public float testFloat;
+    protected static long testLong;
+    private string[] testStringArray;
+    protected double testDoubleTwo;
+    public int testIntTwo;
+    protected double testDoubleThree;
+    public double[] testDoubleArrayTwo;
+    private double testDoubleFour;
+    public string testStringTwo;
+    protected string testStringThree;
+    public double[] testDoubleArrayThree;
+    private double testDoubleFive;
+    protected double testDoubleSix;
+    public double testDoubleSeven;
+    private double testDoubleEight;
+    protected double testDoubleNine;
+    public string testStringFour;
+    private string testStringFive;
+    protected string testStringSix;
+    public string[] testStringArrayFour;
+    public string[] testStringArrayFive;
+    protected string[] testStringArraySix;
+    private string[] testStringArraySeven;
+
+    public static void Main(string[] args)
+    {
+        string input;
+        while ((input = Console.ReadLine()) != "HARVEST")
+        {
+            string accessModifier = input.Trim();
+            PrintFieldsWithAccessModifier(accessModifier);
+        }
+    }
+
+    private static void PrintFieldsWithAccessModifier(string accessModifier)
+    {
+        FieldInfo[] fields = typeof(RichSoilLand).GetFields(BindingFlags.Instance |
+                                                            BindingFlags.Static |
+                                                            BindingFlags.Public |
+                                                            BindingFlags.NonPublic);
+
+        foreach (FieldInfo field in fields)
+        {
+            if (accessModifier == "all" ||
+                (accessModifier == "private" && field.IsPrivate) ||
+                (accessModifier == "protected" && field.IsFamily) ||
+                (accessModifier == "public" && field.IsPublic))
+            {
+                Console.WriteLine($"{GetAccessModifierString(field)} {field.FieldType.Name} {field.Name}");
+            }
+        }
+    }
+
+    private static string GetAccessModifierString(FieldInfo field)
+    {
+        if (field.IsPublic)
+        {
+            return "public";
+        }
+        else if (field.IsFamily)
+        {
+            return "protected";
+        }
+        else
+        {
+            return "private";
+        }
+    }
+}
