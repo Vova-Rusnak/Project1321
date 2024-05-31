@@ -1,0 +1,124 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Employee
+{
+    public string Name { get; private set; }
+
+    public Employee(string name)
+    {
+        Name = name;
+    }
+
+    public virtual int WorkHoursPerWeek { get; } // Base class with default work hours
+
+    public override string ToString()
+    {
+        return Name;
+    }
+}
+
+class StandardEmployee : Employee
+{
+    public StandardEmployee(string name) : base(name)
+    {
+    }
+
+    public override int WorkHoursPerWeek => 40; // Overrides work hours for StandardEmployee
+}
+
+class PartTimeEmployee : Employee
+{
+    public PartTimeEmployee(string name) : base(name)
+    {
+    }
+
+    public override int WorkHoursPerWeek => 20; // Overrides work hours for PartTimeEmployee
+}
+
+class Job
+{
+    public string Name { get; private set; }
+    public int HoursOfWorkRequired { get; private set; }
+    public Employee AssignedEmployee { get; private set; }
+
+    public Job(string name, int hoursOfWorkRequired, Employee assignedEmployee)
+    {
+        Name = name;
+        HoursOfWorkRequired = hoursOfWorkRequired;
+        AssignedEmployee = assignedEmployee;
+    }
+
+    public void Update()
+    {
+        HoursOfWorkRequired -= AssignedEmployee.WorkHoursPerWeek;
+        if (HoursOfWorkRequired <= 0)
+        {
+            Console.WriteLine($"Job {Name} done!");
+        }
+    }
+
+    public override string ToString()
+    {
+        return $"Job: {Name} Hours Remaining: {HoursOfWorkRequired}";
+    }
+}
+
+class WorkForce
+{
+    static void Main()
+    {
+        Dictionary<string, Employee> employees = new Dictionary<string, Employee>();
+        List<Job> jobs = new List<Job>();
+
+        string input;
+        while ((input = Console.ReadLine()) != "End")
+        {
+            string[] tokens = input.Split();
+            string command = tokens[0];
+
+            if (command == "StandardEmployee" || command == "PartTimeEmployee")
+            {
+                string employeeName = tokens[1];
+                Employee employee;
+                if (command == "StandardEmployee")
+                {
+                    employee = new StandardEmployee(employeeName);
+                }
+                else
+                {
+                    employee = new PartTimeEmployee(employeeName);
+                }
+                employees.Add(employeeName, employee);
+            }
+            else if (command == "Job")
+            {
+                string jobName = tokens[1];
+                int hoursOfWorkRequired = int.Parse(tokens[2]);
+                string employeeName = tokens[3];
+                Employee assignedEmployee = employees[employeeName];
+                Job job = new Job(jobName, hoursOfWorkRequired, assignedEmployee);
+                jobs.Add(job);
+            }
+            else if (command == "Pass")
+            {
+                foreach (var job in jobs.ToList())
+                {
+                    job.Update();
+                    if (job.HoursOfWorkRequired <= 0)
+                    {
+                        jobs.Remove(job);
+                    }
+                }
+            }
+            else if (command == "Status")
+            {
+                foreach (var job in jobs)
+                {
+                    Console.WriteLine(job);
+                }
+            }
+        }
+    }
+}
