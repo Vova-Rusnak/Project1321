@@ -1,0 +1,34 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Student
+{
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public int Group { get; set; }
+}
+
+class Program
+{
+    static void Main()
+    {
+        var students = new List<Student>
+        {
+            new Student { FirstName = "Sara", LastName = "Mills", Group = 1 },
+            new Student { FirstName = "Andrew", LastName = "Gibson", Group = 2 },
+            new Student { FirstName = "Craig", LastName = "Ellis", Group = 1 },
+            new Student { FirstName = "Steven", LastName = "Cole", Group = 2 },
+            new Student { FirstName = "Andrew", LastName = "Carter", Group = 2 }
+        };
+
+        var group2Students = students
+            .Where(s => s.Group == 2)
+            .OrderBy(s => s.FirstName);
+
+        foreach (var student in group2Students)
+        {
+            Console.WriteLine($"{student.FirstName} {student.LastName}");
+        }
+    }
+}
