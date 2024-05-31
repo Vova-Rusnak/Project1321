@@ -1,0 +1,37 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program
+{
+    static void Main()
+    {
+        string sentence = Console.ReadLine();
+        char[] separators = { '.', ',', ':', ';', '=', '(', ')', '&', '[', ']', '"', '\'', '\\', '/', '!', '?', ' ' };
+        
+        string[] words = sentence.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+        char[] separatorsInSentence = sentence.Where(c => separators.Contains(c)).ToArray();
+        
+        Array.Reverse(words);
+        
+        int wordIndex = 0;
+        int separatorIndex = 0;
+        bool lastWasSeparator = separators.Contains(sentence[0]);
+        
+        foreach (char ch in sentence)
+        {
+            if (separators.Contains(ch))
+            {
+                if (!lastWasSeparator) separatorIndex++;
+                lastWasSeparator = true;
+                Console.Write(separatorsInSentence[separatorIndex]);
+            }
+            else
+            {
+                if (lastWasSeparator) wordIndex++;
+                lastWasSeparator = false;
+                Console.Write(words[wordIndex]);
+            }
+        }
+    }
+}
