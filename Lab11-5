@@ -1,0 +1,113 @@
+using System;
+using System.Collections.Generic;
+
+public class King
+{
+    public string Name { get; }
+
+    public King(string name)
+    {
+        Name = name;
+    }
+
+    public void RespondToAttack()
+    {
+        Console.WriteLine($"King {Name} is under attack!");
+    }
+}
+
+public abstract class Soldier
+{
+    public string Name { get; }
+    public int HitsToDie { get; protected set; }
+
+    public Soldier(string name, int hitsToDie)
+    {
+        Name = name;
+        HitsToDie = hitsToDie;
+    }
+
+    public void TakeHit()
+    {
+        HitsToDie--;
+        if (HitsToDie <= 0)
+        {
+            Died?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    public abstract void RespondToAttack();
+
+    public event EventHandler Died;
+}
+
+public class Footman : Soldier
+{
+    public Footman(string name) : base(name, 2) { }
+
+    public override void RespondToAttack()
+    {
+        Console.WriteLine($"Footman {Name} is panicking!");
+    }
+}
+
+public class RoyalGuard : Soldier
+{
+    public RoyalGuard(string name) : base(name, 3) { }
+
+    public override void RespondToAttack()
+    {
+        Console.WriteLine($"Royal Guard {Name} is defending!");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        string kingName = Console.ReadLine();
+        King king = new King(kingName);
+
+        List<Soldier> royalGuards = new List<Soldier>();
+        List<Soldier> footmen = new List<Soldier>();
+
+        string[] royalGuardNames = Console.ReadLine().Split();
+        foreach (var name in royalGuardNames)
+        {
+            RoyalGuard guard = new RoyalGuard(name);
+            guard.Died += (sender, args) => royalGuards.Remove((RoyalGuard)sender);
+            royalGuards.Add(guard);
+        }
+
+        string[] footmanNames = Console.ReadLine().Split();
+        foreach (var name in footmanNames)
+        {
+            Footman footman = new Footman(name);
+            footman.Died += (sender, args) => footmen.Remove((Footman)sender);
+            footmen.Add(footman);
+        }
+
+        string command;
+        while ((command = Console.ReadLine()) != "End")
+        {
+            if (command == "Attack King")
+            {
+                king.RespondToAttack();
+                foreach (var guard in royalGuards)
+                {
+                    guard.RespondToAttack();
+                }
+                foreach (var footman in footmen)
+                {
+                    footman.RespondToAttack();
+                }
+            }
+            else if (command.StartsWith("Kill "))
+            {
+                string name = command.Split()[1];
+                Soldier soldier = royalGuards.Find(g => g.Name == name) ?? (Soldier)footmen.Find(f => f.Name == name);
+                soldier?.TakeHit();
+            }
+        }
+    }
+}
