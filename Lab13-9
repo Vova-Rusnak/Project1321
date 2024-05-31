@@ -1,0 +1,13 @@
+using System;
+using System.Globalization;
+
+class Program
+{
+    static void Main()
+    {
+        string input = Console.ReadLine();
+        TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+        string capitalized = textInfo.ToTitleCase(input.ToLower());
+        Console.WriteLine(capitalized);
+    }
+}
