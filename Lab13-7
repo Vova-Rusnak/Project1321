@@ -1,0 +1,27 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        string input = Console.ReadLine();
+        string startTag = "<upcase>";
+        string endTag = "</upcase>";
+
+        while (true)
+        {
+            int startIndex = input.IndexOf(startTag);
+            if (startIndex == -1) break;
+
+            int endIndex = input.IndexOf(endTag);
+            if (endIndex == -1) break;
+
+            string toReplace = input.Substring(startIndex, endIndex + endTag.Length - startIndex);
+            string uppercased = input.Substring(startIndex + startTag.Length, endIndex - startIndex - startTag.Length).ToUpper();
+
+            input = input.Replace(toReplace, uppercased);
+        }
+
+        Console.WriteLine(input);
+    }
+}
