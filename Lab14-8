@@ -1,0 +1,33 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Student
+{
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public List<int> Marks { get; set; }
+}
+
+class Program
+{
+    static void Main()
+    {
+        var students = new List<Student>
+        {
+            new Student { FirstName = "Sara", LastName = "Mills", Marks = new List<int> { 6, 6, 6, 5 } },
+            new Student { FirstName = "Andrew", LastName = "Gibson", Marks = new List<int> { 3, 4, 5, 6 } },
+            new Student { FirstName = "Craig", LastName = "Ellis", Marks = new List<int> { 4, 2, 3, 4 } },
+            new Student { FirstName = "Steven", LastName = "Cole", Marks = new List<int> { 5, 6, 5, 5 } },
+            new Student { FirstName = "Andrew", LastName = "Carter", Marks = new List<int> { 5, 3, 4, 2 } }
+        };
+
+        var weakStudents = students
+            .Where(s => s.Marks.Count(m => m <= 3) >= 2);
+
+        foreach (var student in weakStudents)
+        {
+            Console.WriteLine($"{student.FirstName} {student.LastName}");
+        }
+    }
+}
