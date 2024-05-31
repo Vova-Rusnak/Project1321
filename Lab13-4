@@ -1,0 +1,23 @@
+using System;
+using System.Linq;
+
+class Program
+{
+    static void Main()
+    {
+        string keyword = Console.ReadLine();
+        string text = Console.ReadLine();
+
+        char[] sentenceSeparators = { '.', '!', '?' };
+        string[] sentences = text.Split(sentenceSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (var sentence in sentences)
+        {
+            var words = sentence.Split(new char[] { ' ', ',', ';', ':', '-', '_', '(', ')', '[', ']', '{', '}', '"', '\'', '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
+            if (words.Contains(keyword))
+            {
+                Console.WriteLine(sentence.Trim());
+            }
+        }
+    }
+}
