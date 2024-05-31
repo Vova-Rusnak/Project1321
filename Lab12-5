@@ -1,0 +1,140 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class KingGambitExtended
+{
+    static void Main()
+    {
+        string kingName = Console.ReadLine();
+        King king = new King(kingName);
+
+        string[] royalGuardNames = Console.ReadLine().Split();
+        List<RoyalGuard> royalGuards = royalGuardNames.Select(name => new RoyalGuard(name)).ToList();
+
+        string[] footmanNames = Console.ReadLine().Split();
+        List<Footman> footmen = footmanNames.Select(name => new Footman(name)).ToList();
+
+        string input;
+        while ((input = Console.ReadLine()) != "End")
+        {
+            if (input == "Attack King")
+            {
+                king.RespondToAttack();
+                foreach (var royalGuard in royalGuards)
+                {
+                    royalGuard.RespondToAttack();
+                }
+                foreach (var footman in footmen)
+                {
+                    footman.RespondToAttack();
+                }
+            }
+            else if (input.StartsWith("Kill"))
+            {
+                string[] tokens = input.Split();
+                string name = tokens[1];
+                KillUnit(royalGuards, footmen, name);
+            }
+        }
+    }
+
+    static void KillUnit(List<RoyalGuard> royalGuards, List<Footman> footmen, string name)
+    {
+        RoyalGuard royalGuard = royalGuards.FirstOrDefault(r => r.Name == name);
+        if (royalGuard != null)
+        {
+            royalGuard.Hit();
+            return;
+        }
+
+        Footman footman = footmen.FirstOrDefault(f => f.Name == name);
+        if (footman != null)
+        {
+            footman.Hit();
+        }
+    }
+}
+
+class King
+{
+    public string Name { get; private set; }
+
+    public King(string name)
+    {
+        Name = name;
+    }
+
+    public void RespondToAttack()
+    {
+        Console.WriteLine($"King {Name} is under attack!");
+    }
+}
+
+class RoyalGuard
+{
+    public string Name { get; private set; }
+    public int Hits { get; private set; }
+    public bool IsDead { get; private set; }
+
+    public event Action Died;
+
+    public RoyalGuard(string name)
+    {
+        Name = name;
+        Hits = 0;
+        IsDead = false;
+    }
+
+    public void RespondToAttack()
+    {
+        if (!IsDead)
+        {
+            Console.WriteLine($"Royal Guard {Name} is defending!");
+        }
+    }
+
+    public void Hit()
+    {
+        Hits++;
+        if (Hits >= 3 && !IsDead)
+        {
+            IsDead = true;
+            Died?.Invoke();
+        }
+    }
+}
+
+class Footman
+{
+    public string Name { get; private set; }
+    public int Hits { get; private set; }
+    public bool IsDead { get; private set; }
+
+    public event Action Died;
+
+    public Footman(string name)
+    {
+        Name = name;
+        Hits = 0;
+        IsDead = false;
+    }
+
+    public void RespondToAttack()
+    {
+        if (!IsDead)
+        {
+            Console.WriteLine($"Footman {Name} is panicking!");
+        }
+    }
+
+    public void Hit()
+    {
+        Hits++;
+        if (Hits >= 2 && !IsDead)
+        {
+            IsDead = true;
+            Died?.Invoke();
+        }
+    }
+}
