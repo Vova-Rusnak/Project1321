@@ -1,0 +1,75 @@
+using System;
+using System.Reflection;
+
+public class BlackBoxInt
+{
+    private int innerValue;
+
+    private BlackBoxInt(int innerValue)
+    {
+        this.innerValue = innerValue;
+    }
+
+    private void Add(int addend)
+    {
+        this.innerValue += addend;
+    }
+
+    private void Subtract(int subtrahend)
+    {
+        this.innerValue -= subtrahend;
+    }
+
+    private void Multiply(int multiplier)
+    {
+        this.innerValue *= multiplier;
+    }
+
+    private void Divide(int divider)
+    {
+        this.innerValue /= divider;
+    }
+
+    private void LeftShift(int shifter)
+    {
+        this.innerValue <<= shifter;
+    }
+
+    private void RightShift(int shifter)
+    {
+        this.innerValue >>= shifter;
+    }
+
+    public static BlackBoxInt Create(int innerValue)
+    {
+        return new BlackBoxInt(innerValue);
+    }
+
+    public int GetValue()
+    {
+        return this.innerValue;
+    }
+}
+
+public class BlackBoxInteger
+{
+    public static void Main()
+    {
+        Type type = typeof(BlackBoxInt);
+        BlackBoxInt blackBox = BlackBoxInt.Create(0);
+
+        string input;
+        while ((input = Console.ReadLine()) != "END")
+        {
+            string[] tokens = input.Split('_');
+            string methodName = tokens[0];
+            int value = int.Parse(tokens[1]);
+
+            MethodInfo method = type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+            method.Invoke(blackBox, new object[] { value });
+
+            int currentValue = blackBox.GetValue();
+            Console.WriteLine(currentValue);
+        }
+    }
+}
