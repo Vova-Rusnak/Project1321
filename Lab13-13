@@ -1,0 +1,44 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program
+{
+    static void Main()
+    {
+        SortedDictionary<string, string> phonebook = new SortedDictionary<string, string>();
+        string command;
+
+        while ((command = Console.ReadLine()) != "END")
+        {
+            string[] parts = command.Split();
+            string action = parts[0];
+
+            if (action == "A")
+            {
+                string name = parts[1];
+                string phone = parts[2];
+                phonebook[name] = phone;
+            }
+            else if (action == "S")
+            {
+                string name = parts[1];
+                if (phonebook.ContainsKey(name))
+                {
+                    Console.WriteLine($"{name} -> {phonebook[name]}");
+                }
+                else
+                {
+                    Console.WriteLine($"Contact {name} does not exist.");
+                }
+            }
+            else if (action == "ListAll")
+            {
+                foreach (var entry in phonebook)
+                {
+                    Console.WriteLine($"{entry.Key} -> {entry.Value}");
+                }
+            }
+        }
+    }
+}
